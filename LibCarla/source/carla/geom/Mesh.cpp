@@ -117,30 +117,56 @@ void Mesh::AddTriangleStrip(const std::vector<Mesh::vertex_type> &vertices) {
     }
   }
 
-  void Mesh::AddVertex(vertex_type vertex) {
+  // Mesh类的成员函数，用于向该Mesh对象的顶点列表中添加单个顶点。
+// 参数vertex是要添加的顶点，类型为vertex_type（这里vertex_type应该是在Mesh类中定义的表示顶点的某种类型）
+void Mesh::AddVertex(vertex_type vertex) {
+    // 将传入的顶点添加到名为_vertices的成员变量中，_vertices应该是一个存储顶点的容器（比如可能是vector类型），
+    // push_back函数用于在容器末尾添加元素，实现了单个顶点的添加操作。
     _vertices.push_back(vertex);
   }
 
-  void Mesh::AddVertices(const std::vector<Mesh::vertex_type> &vertices) {
+// Mesh类的成员函数，用于向该Mesh对象的顶点列表中批量添加多个顶点。
+// 参数vertices是一个包含多个顶点的常量引用，类型为std::vector<Mesh::vertex_type>，即存储vertex_type类型元素的vector容器。
+void Mesh::AddVertices(const std::vector<Mesh::vertex_type> &vertices) {
+    // 使用std::copy算法将输入的顶点容器（vertices）中的所有元素复制到当前Mesh对象的顶点容器（_vertices）中。
+    // std::copy函数接受三个迭代器参数，前两个指定要复制的范围（这里是从vertices容器的开始到结束），
+    // 第三个参数是目标容器的插入迭代器（std::back_inserter会返回一个在容器末尾插入元素的迭代器），
+    // 通过这种方式实现了批量添加多个顶点到当前Mesh对象的顶点列表中。
     std::copy(vertices.begin(), vertices.end(), std::back_inserter(_vertices));
   }
 
-  void Mesh::AddNormal(normal_type normal) {
+// Mesh类的成员函数，用于向该Mesh对象的法线向量列表中添加单个法线向量。
+// 参数normal是要添加的法线向量，类型为normal_type（同样，normal_type应该是Mesh类中定义的表示法线向量的某种类型）
+void Mesh::AddNormal(normal_type normal) {
+    // 将传入的法线向量添加到名为_normals的成员变量中，_normals大概率是一个存储法线向量的容器，
+    // 这里通过push_back函数实现在容器末尾添加单个法线向量的操作。
     _normals.push_back(normal);
   }
 
-  void Mesh::AddIndex(index_type index) {
+// Mesh类的成员函数，用于向该Mesh对象的索引列表中添加单个索引值。
+// 参数index是要添加的索引值，类型为index_type（推测是表示索引的某种合适的数据类型，由Mesh类定义）
+void Mesh::AddIndex(index_type index) {
+    // 将传入的索引值添加到名为_indexes的成员变量中，_indexes应该是一个存储索引值的容器，
+    // 利用push_back函数在容器末尾添加元素，完成单个索引值的添加操作。
     _indexes.push_back(index);
   }
 
-  void Mesh::AddUV(uv_type uv) {
+// Mesh类的成员函数，用于向该Mesh对象的UV坐标列表中添加单个UV坐标。
+// 参数uv是要添加的UV坐标，类型为uv_type（是Mesh类中定义的表示UV坐标的某种类型）
+void Mesh::AddUV(uv_type uv) {
+    // 将传入的UV坐标添加到名为_uvs的成员变量中，_uvs大概率是一个存储UV坐标的容器，
+    // 通过push_back函数实现在容器末尾添加单个UV坐标的操作。
     _uvs.push_back(uv);
   }
 
-  void Mesh::AddUVs(const std::vector<uv_type> & uv) {
+// Mesh类的成员函数，用于向该Mesh对象的UV坐标列表中批量添加多个UV坐标。
+// 参数uv是一个包含多个UV坐标的常量引用，类型为std::vector<uv_type>，即存储uv_type类型元素的vector容器。
+void Mesh::AddUVs(const std::vector<uv_type> & uv) {
+    // 采用std::copy算法将输入的UV坐标容器（uv）中的所有元素复制到当前Mesh对象的UV坐标容器（_uvs）中。
+    // 同前面AddVertices函数中使用std::copy类似，这里也是通过指定合适的迭代器范围和目标容器的插入迭代器，
+    // 实现了批量添加多个UV坐标到当前Mesh对象的UV坐标列表中。
     std::copy(uv.begin(), uv.end(), std::back_inserter(_uvs));
   }
-
   void Mesh::AddMaterial(const std::string &material_name) {
     const size_t open_index = _indexes.size();
     if (!_materials.empty()) {
