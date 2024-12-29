@@ -69,12 +69,32 @@ namespace nav {
             _manager->GetNavigation()->PauseAgent(_id, false);
 
             // 计算寻找车辆的方向相关操作
-            carla::geom::Location crosswalkEnd;
-            _manager->GetWalkerCrosswalkEnd(_id, crosswalkEnd);
-            carla::geom::Location direction;
-            direction.x = crosswalkEnd.x - currentUnrealPos.x;
-            direction.y = crosswalkEnd.y - currentUnrealPos.y;
-            direction.z = crosswalkEnd.z - currentUnrealPos.z;
+// 定义一个名为crosswalkEnd的变量，其类型是carla::geom::Location，
+// 从命名推测这个变量可能用于表示人行横道（crosswalk）的终点位置，属于Carla几何相关模块（carla::geom）中定义的位置类型，
+// 这里先声明变量，后续会通过相关函数获取其具体的值。
+carla::geom::Location crosswalkEnd;
+
+// 调用_manager对象（这里_manager应该是一个指针或者引用，指向某个管理类的实例，用于协调处理相关事务，具体功能依赖于其所在的具体类定义）的GetWalkerCrosswalkEnd方法，
+// 传入参数_id（推测是一个用于标识行人或者相关对象的唯一标识符）以及前面声明的crosswalkEnd变量（通过引用传递，目的是在函数内部给它赋值，获取人行横道终点位置信息），
+// 该函数的作用应该就是根据给定的标识符去查询并获取对应的人行横道终点位置，然后将结果存储在crosswalkEnd变量中。
+_manager->GetWalkerCrosswalkEnd(_id, crosswalkEnd);
+
+// 定义一个名为direction的变量，同样是carla::geom::Location类型，这个变量大概率用于表示方向向量，
+// 比如后续可能是要计算从当前位置指向人行横道终点位置的方向，先在此声明变量，后续进行具体的赋值操作来确定其各个坐标分量的值。
+carla::geom::Location direction;
+
+// 计算方向向量direction的x坐标分量，通过用人行横道终点位置（crosswalkEnd）的x坐标减去当前虚幻引擎（Unreal，从变量名currentUnrealPos推测，这里可能是在和虚幻引擎相关的开发场景中，利用了虚幻引擎的坐标体系等）中的当前位置（currentUnrealPos）的x坐标来得到，
+// 这样就确定了在x轴方向上从当前位置指向人行横道终点位置的偏移量，也就是方向向量在x轴方向的分量。
+direction.x = crosswalkEnd.x - currentUnrealPos.x;
+
+// 计算方向向量direction的y坐标分量，与人行横道终点位置的y坐标减去当前虚幻引擎中的当前位置的y坐标，
+// 以此确定在y轴方向上从当前位置指向人行横道终点位置的偏移量，即方向向量在y轴方向的分量。
+direction.y = crosswalkEnd.y - currentUnrealPos.y;
+
+// 计算方向向量direction的z坐标分量，按照同样的逻辑，用人行横道终点位置的z坐标减去当前虚幻引擎中的当前位置的z坐标，
+// 从而得到在z轴方向上从当前位置指向人行横道终点位置的偏移量，也就是方向向量在z轴方向的分量。
+// 经过这几步操作，就完整地构建出了一个从当前位置指向人行横道终点位置的方向向量direction，可用于后续诸如行人行走方向引导、路径规划等相关操作。
+direction.z = crosswalkEnd.z - currentUnrealPos.z;
 
             // 检查代理附近是否有车辆
             if (_manager &&!(_manager->GetNavigation()->HasVehicleNear(_id, 6.0f, direction))) {
