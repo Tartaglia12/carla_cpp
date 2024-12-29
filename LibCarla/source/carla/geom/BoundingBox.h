@@ -89,15 +89,28 @@ namespace geom {
     std::array<Location, 8> GetLocalVertices() const { // 定义顶点的局部位置
 
         return {{
-            location + Location(rotation.RotateVector({-extent.x,-extent.y,-extent.z})),
-            location + Location(rotation.RotateVector({-extent.x,-extent.y, extent.z})),
-            location + Location(rotation.RotateVector({-extent.x, extent.y,-extent.z})),
-            location + Location(rotation.RotateVector({-extent.x, extent.y, extent.z})),
-            location + Location(rotation.RotateVector({ extent.x,-extent.y,-extent.z})),
-            location + Location(rotation.RotateVector({ extent.x,-extent.y, extent.z})),
-            location + Location(rotation.RotateVector({ extent.x, extent.y,-extent.z})),
-            location + Location(rotation.RotateVector({ extent.x, extent.y, extent.z}))
-        }};
+          // 以下这一组表达式是通过对某个向量（这里推测extent是一个表示范围或尺寸的向量）进行不同方向的旋转，
+// 然后与location相加，得到多个不同位置相关的结果，整体可能是在构建一个基于某个初始位置（location），
+// 并结合不同旋转情况后的多个位置点集合。
+
+// 第一个位置点，将 {-extent.x,-extent.y,-extent.z} 这个向量进行旋转（通过rotation.RotateVector方法）后与location相加
+location + Location(rotation.RotateVector({-extent.x,-extent.y,-extent.z})),
+// 第二个位置点，将 {-extent.x,-extent.y, extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({-extent.x,-extent.y, extent.z})),
+// 第三个位置点，将 {-extent.x, extent.y,-extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({-extent.x, extent.y,-extent.z})),
+// 第四个位置点，将 {-extent.x, extent.y, extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({-extent.x, extent.y, extent.z})),
+// 第五个位置点，将 { extent.x,-extent.y,-extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({ extent.x,-extent.y,-extent.z})),
+// 第六个位置点，将 { extent.x,-extent.y, extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({ extent.x,-extent.y, extent.z})),
+// 第七个位置点，将 { extent.x, extent.y,-extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({ extent.x, extent.y,-extent.z})),
+// 第八个位置点，将 { extent.x, extent.y, extent.z} 这个向量进行旋转后与location相加
+location + Location(rotation.RotateVector({ extent.x, extent.y, extent.z}))
+// 整体可能是作为一个数组或者集合的元素（这里不太明确外面的语法结构，但从代码形式推测可能是这样），
+// 具体取决于这段代码所在的完整上下文环境，比如是否是在函数返回值、变量赋值等场景中。
     }
 
     /**
