@@ -124,13 +124,16 @@ namespace road {
         const double length, // 长度
         const std::vector<road::element::CrosswalkPoint> points); // 人行横道点集
 
-    // void AddRoadLateralSuperElevation(
-    //     Road* road,
-    //     const double s,
-    //     const double a,
-    //     const double b,
-    //     const double c,
-    //     const double d);
+// 函数声明，函数名为AddRoadLateralSuperElevation，它没有返回值（返回类型为void）。
+// 该函数的作用可能是给指定的道路（Road类型的指针road指向的道路对象）添加横向超高相关的设置或属性（从函数名推测与道路的横向超高有关，横向超高常用于道路设计中，使车辆在弯道行驶时更平稳等情况）。
+// 函数接收五个const修饰的双精度浮点数参数（s、a、b、c、d），这些参数应该是用于确定横向超高相关的具体数值，比如可能是代表超高的起始位置、相关系数等具体的计算参数，具体含义取决于函数内部的实现逻辑以及所在程序的业务场景。
+void AddRoadLateralSuperElevation(
+    Road* road,
+    const double s,
+    const double a,
+    const double b,
+    const double c,
+    const double d);
 
     // void AddRoadLateralCrossfall(
     //     Road* road,
