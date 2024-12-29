@@ -78,12 +78,29 @@ namespace learning {
     // 获取轮力张量的数据指针，并假定数据类型为float
     const float* wheel_forces_data = wheel_forces.data_ptr<float>();
     // 从轮力张量中提取x, y, z方向的轮力和轮扭矩，并存储到result结构体中
-    result.wheel_forces_x = wheel_forces_data[0];
-    result.wheel_forces_y = wheel_forces_data[1];
-    result.wheel_forces_z = wheel_forces_data[2];
-    result.wheel_torque_x = wheel_forces_data[3];
-    result.wheel_torque_y = wheel_forces_data[4];
-    result.wheel_torque_z = wheel_forces_data[5];
+// 将wheel_forces_data数组（这里wheel_forces_data应该是一个存储了和车轮受力、扭矩等相关数据的数组，其元素类型从赋值情况推测应该是适合表示力或扭矩数值的类型，比如float类型）中索引为0的元素值赋给result对象（result应该是一个自定义的结构体或者类的实例，包含了多个和车轮相关属性的成员变量）的wheel_forces_x成员变量。
+// 这样做的目的大概率是从数据源（wheel_forces_data数组）提取出对应的数据，填充到表示结果的result对象中，这里的wheel_forces_x可能表示车轮在x方向上所受的力。
+result.wheel_forces_x = wheel_forces_data[0];
+
+// 把wheel_forces_data数组中索引为1的元素值赋给result对象的wheel_forces_y成员变量，
+// 意味着将车轮在y方向上所受的力（从变量命名wheel_forces_y推测）相关的数据从数据源提取出来，存储到result对象中相应的成员变量位置，方便后续对该数据的统一处理或使用。
+result.wheel_forces_y = wheel_forces_data[1];
+
+// 用wheel_forces_data数组中索引为2的元素值给result对象的wheel_forces_z成员变量赋值，
+// 此处wheel_forces_z很可能代表车轮在z方向上所受的力，通过这行代码实现了从数据存储数组中获取对应数据并填充到result对象对应成员变量的操作，便于整合相关的车轮受力信息。
+result.wheel_forces_z = wheel_forces_data[2];
+
+// 将wheel_forces_data数组中索引为3的元素值赋给result对象的wheel_torque_x成员变量，
+// 可以推测wheel_torque_x表示车轮在x方向上的扭矩，这行代码就是把相应的扭矩数据从数据源数组中提取出来，赋值到result对象里，方便后续依据这个结果进行与车轮扭矩相关的分析或处理等操作。
+result.wheel_torque_x = wheel_forces_data[3];
+
+// 把wheel_forces_data数组中索引为4的元素值赋给result对象的wheel_torque_y成员变量，
+// 其中wheel_torque_y大概率代表车轮在y方向上的扭矩，通过此赋值操作，从存储数据的数组中获取对应的数据并放入result对象的合适成员变量位置，以完成对车轮扭矩数据在y方向上的提取与整合。
+result.wheel_torque_y = wheel_forces_data[4];
+
+// 使用wheel_forces_data数组中索引为5的元素值给result对象的wheel_torque_z成员变量赋值，
+// 这里wheel_torque_z很可能表示车轮在z方向上的扭矩，如此一来，通过这一系列赋值操作，就把车轮受力和扭矩在各个方向上的数据从wheel_forces_data数组中提取出来，完整地填充到了result对象中，方便后续基于这些完整的车轮相关数据进行进一步的处理，比如分析车辆的动力性能、操控特性等操作都可能会用到这些数据。
+result.wheel_torque_z = wheel_forces_data[5];
     // 获取粒子力张量的数据指针，并假定数据类型为float 
     const float* particle_forces_data = particle_forces.data_ptr<float>();
     // 定义粒子力的维度数量（假设为3D空间，即x, y, z三个方向）
