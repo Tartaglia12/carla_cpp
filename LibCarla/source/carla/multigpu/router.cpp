@@ -71,19 +71,41 @@ void Router::SetCallbacks() {
     self->DisconnectSession(session);
   };
 
-  carla::multigpu::Listener::callback_function_type_response on_response =
+  // 定义一个名为on_response的变量，其类型是carla::multigpu::Listener::callback_function_type_response，
+// 从名字推测这应该是一个回调函数类型（很可能是在Carla多GPU相关模块中定义的用于处理响应的回调函数类型）。
+// 这里使用lambda表达式来创建一个具体的回调函数实例，该回调函数会在特定的响应事件发生时被调用。
+carla::multigpu::Listener::callback_function_type_response on_response =
     [=](std::shared_ptr<carla::multigpu::Primary> session, carla::Buffer buffer) {
-      auto self = weak.lock();
-      if (!self) return;
-      std::lock_guard<std::mutex> lock(self->_mutex);
-      auto prom =self-> _promises.find(session.get());
-      if (prom!= self->_promises.end()) {
-        log_info("Got data from secondary (with promise): ", buffer.size());
-        prom->second->set_value({session, std::move(buffer)});
-        self->_promises.erase(prom);
-      } else {
-        log_info("Got data from secondary (without promise): ", buffer.size());
-      }
+        // 通过weak.lock()获取一个指向当前对象（这里的this指针，从代码中weak变量的使用推测是在某个类内部定义的这段lambda表达式）的共享指针self，
+        // weak应该是一个std::weak_ptr类型的变量，用于解决可能的对象生命周期相关问题，避免出现悬空指针等情况。
+        auto self = weak.lock();
+        // 如果获取到的指向当前对象的共享指针self为空，说明当前对象可能已经被销毁或者不可用了，直接返回，不执行后续逻辑。
+        if (!self) return;
+
+        // 创建一个std::lock_guard对象lock，它基于self对象的_mutex成员变量（应该是一个std::mutex类型，用于线程同步，防止多线程并发访问共享资源时出现数据不一致等问题），
+        // 在这里，当进入这个代码块时，会自动获取互斥锁，保证在这个代码块执行期间，对受保护的共享资源（可能就是后面操作涉及的相关数据结构等）的独占访问权限，
+        // 当代码块执行结束时，lock对象析构，会自动释放互斥锁，保证了线程安全。
+        std::lock_guard<std::mutex> lock(self->_mutex);
+
+        // 在self对象的_promises成员变量中查找与传入的session对应的元素，_promises应该是一个存储某种承诺（从代码逻辑推测可能和异步操作、等待响应相关的数据结构，比如可能是std::map类型，以session对应的指针为键）的容器，
+        // find方法用于查找键值等于session.get()（session.get()返回的是原始指针，用于在容器中进行键的匹配查找）的元素，返回一个迭代器指向找到的元素或者指向容器末尾（如果没找到）。
+        auto prom = self->_promises.find(session.get());
+        // 如果找到了对应的元素（即prom不等于self->_promises.end()），说明之前针对这个session有过相应的承诺或者等待的操作，现在收到了对应的响应数据。
+        if (prom!= self->_promises.end()) {
+            // 输出日志信息，提示从辅助（secondary）设备（这里从代码整体场景推测，可能是在多GPU架构中涉及主从设备之类的概念）获取到了数据，并且附带了获取到的数据缓冲区（buffer）的大小信息，
+            // log_info函数应该是自定义的用于记录日志的函数，方便在程序运行过程中输出相关的调试或运行状态信息。
+            log_info("Got data from secondary (with promise): ", buffer.size());
+            // 通过迭代器prom获取对应的承诺对象（这里prom->second应该指向存储在_promises容器中的与session对应的承诺相关的值，从后面的调用set_value来看，可能是一个类似std::promise类型的对象），
+            // 然后调用set_value方法，将包含session和移动后的buffer（通过std::move将buffer的所有权转移，避免不必要的拷贝开销）的一个值设置到承诺对象中，
+            // 这样，在其他等待这个承诺的地方（比如可能是异步操作发起处）就能获取到对应的响应数据了。
+            prom->second->set_value({session, std::move(buffer)});
+            // 完成承诺相关的设置后，将对应的元素从_promises容器中删除，因为这个承诺已经被兑现了，不需要再继续保留在容器中等待处理。
+            self->_promises.erase(prom);
+        } else {
+            // 如果在_promises容器中没有找到与当前session对应的元素，说明这次收到的数据可能不是之前有明确承诺等待的情况，
+            // 同样输出日志信息，提示从辅助设备获取到了数据，但没有对应的承诺，并且附带数据缓冲区的大小信息。
+            log_info("Got data from secondary (without promise): ", buffer.size());
+        }
     };
 
   _commander.set_router(shared_from_this());
