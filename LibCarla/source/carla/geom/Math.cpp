@@ -144,11 +144,21 @@ namespace geom {
   // Math 类的成员函数 GetForwardVector，用于根据给定的旋转信息 rotation 获取对应的前向向量（在三维空间中）。
   // 它先将旋转信息中的俯仰角（pitch）、偏航角（yaw）转换为弧度制（通过 ToRadians 函数，应该是角度转弧度的函数），
   // 然后根据三角函数关系计算前向向量的 x、y、z 坐标分量，返回表示前向向量的 Vector3D 对象。
-  Vector3D Math::GetForwardVector(const Rotation &rotation) {
+  // 函数定义，位于Math类（这里推测是自定义的一个包含数学相关操作的类）中，函数名为GetForwardVector
+// 作用是根据给定的旋转信息（以Rotation类型的对象表示）来获取一个表示向前方向的三维向量（Vector3D类型）
+Vector3D Math::GetForwardVector(const Rotation &rotation) {
+    // 将旋转角度中的俯仰角（pitch）转换为弧度制后，计算其余弦值，
+    // std::cos是C++标准库中的余弦函数，ToRadians函数（这里应该是自定义的角度转换函数）用于将角度转换为弧度
     const float cp = std::cos(ToRadians(rotation.pitch));
+    // 将旋转角度中的俯仰角（pitch）转换为弧度制后，计算其正弦值，
+    // std::sin是C++标准库中的正弦函数
     const float sp = std::sin(ToRadians(rotation.pitch));
+    // 将旋转角度中的偏航角（yaw）转换为弧度制后，计算其余弦值
     const float cy = std::cos(ToRadians(rotation.yaw));
+    // 将旋转角度中的偏航角（yaw）转换为弧度制后，计算其正弦值
     const float sy = std::sin(ToRadians(rotation.yaw));
+    // 根据三角函数计算结果，构建并返回一个表示向前方向的三维向量，
+    // 其x、y、z分量分别通过上述计算的三角函数值组合得到，具体的数学原理可能与空间坐标变换、旋转相关
     return {cy * cp, sy * cp, sp};
   }
 
