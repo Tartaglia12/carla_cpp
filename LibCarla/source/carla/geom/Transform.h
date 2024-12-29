@@ -102,24 +102,57 @@ namespace geom {
 
         /// 计算变换的 4 矩阵形式
         /// 通过当前的旋转角度（偏航、俯仰、翻滚）以及位置信息，按照特定的数学变换规则计算出一个 4x4 的变换矩阵，用于更通用的线性变换操作表示
-        std::array<float, 16> GetMatrix() const {
-            const float yaw = rotation.yaw;
-            const float cy = std::cos(Math::ToRadians(yaw));
-            const float sy = std::sin(Math::ToRadians(yaw));
+      // 函数定义，位于某个类中（这里从代码上下文推测应该是和空间变换、矩阵操作相关的类），函数名为GetMatrix，
+// 它返回一个固定大小为16个元素的float类型数组（std::array<float, 16>），用于表示一个变换矩阵（很可能是4x4的矩阵，常用于3D空间变换），
+// 并且函数被声明为const，表示调用该函数不会修改类的成员变量，只是获取相关数据来构建并返回矩阵。
+std::array<float, 16> GetMatrix() const {
+    // 获取旋转信息中的偏航角（yaw），这里的rotation应该是类中的一个成员变量，用于存储物体的旋转信息，
+    // 偏航角表示绕y轴的旋转角度，后续将基于这个角度以及其他旋转角度来构建变换矩阵。
+    const float yaw = rotation.yaw;
+    // 将偏航角（yaw）转换为弧度制后，计算其余弦值，
+    // std::cos是C++标准库中的余弦函数，Math::ToRadians函数（这里应该是自定义的角度转换函数，在Math类中定义）用于将角度转换为弧度，
+    // 得到的结果cy将用于构建变换矩阵的相关元素。
+    const float cy = std::cos(Math::ToRadians(yaw));
+    // 将偏航角（yaw）转换为弧度制后，计算其正弦值，
+    // std::sin是C++标准库中的正弦函数，同样利用ToRadians函数先进行角度到弧度的转换，
+    // 得到的结果sy也会参与到变换矩阵元素的构建中。
+    const float sy = std::sin(Math::ToRadians(yaw));
 
-            const float roll = rotation.roll;
-            const float cr = std::cos(Math::ToRadians(roll));
-            const float sr = std::sin(Math::ToRadians(roll));
+    // 获取旋转信息中的翻滚角（roll），翻滚角表示绕x轴的旋转角度，同样是构建变换矩阵需要考虑的旋转分量之一。
+    const float roll = rotation.roll;
+    // 将翻滚角（roll）转换为弧度制后，计算其余弦值，用于后续矩阵元素的计算。
+    const float cr = std::cos(Math::ToRadians(roll));
+    // 将翻滚角（roll）转换为弧度制后，计算其正弦值，该值也会在构建矩阵元素时用到。
+    const float sr = std::sin(Math::ToRadians(roll));
 
-            const float pitch = rotation.pitch;
-            const float cp = std::cos(Math::ToRadians(pitch));
-            const float sp = std::sin(Math::ToRadians(pitch));
+    // 获取旋转信息中的俯仰角（pitch），俯仰角表示绕z轴的旋转角度，是构建变换矩阵的另一个重要旋转分量。
+    const float pitch = rotation.pitch;
+    // 将俯仰角（pitch）转换为弧度制后，计算其余弦值，会参与到变换矩阵具体元素的计算过程中。
+    const float cp = std::cos(Math::ToRadians(pitch));
+    // 将俯仰角（pitch）转换为弧度制后，计算其正弦值，同样是构建变换矩阵元素时的重要组成部分。
+    const float sp = std::sin(Math::ToRadians(pitch));
 
-            std::array<float, 16> transform = {
-                cp * cy, cy * sp * sr - sy * cr, -cy * sp * cr - sy * sr, location.x,
-                cp * sy, sy * sp * sr + cy * cr, -sy * sp * cr + cy * sr, location.y,
-                sp, -cp * sr, cp * cr, location.z,
-                0.0, 0.0, 0.0, 1.0};
+    // 构建一个固定大小为16个元素的float类型数组（std::array<float, 16>），用于表示变换矩阵，
+    // 这里按照特定的顺序和数学公式来初始化数组的各个元素，这个顺序和具体的矩阵布局（很可能是4x4的齐次坐标变换矩阵）以及空间旋转、平移变换的数学原理相关。
+    // 下面逐行解释数组元素的含义及对应的数学计算关系：
+    std::array<float, 16> transform = {
+        // 第一行元素，根据空间旋转和平移变换的矩阵构建公式，这是变换矩阵第一行的前三个元素，
+        // 涉及到俯仰角（pitch）、偏航角（yaw）的三角函数组合，用于表示在x方向上经过旋转后的坐标变换关系，
+        // 最后一个元素location.x表示在x方向上的平移量（location应该是表示位置的成员变量，存储了物体在空间中的位置坐标）。
+        cp * cy, cy * sp * sr - sy * cr, -cy * sp * cr - sy * sr, location.x,
+        // 第二行元素，同样基于旋转角度的三角函数计算，是变换矩阵第二行的前三个元素，
+        // 体现了在y方向上经过旋转后的坐标变换关系，最后一个元素location.y表示在y方向上的平移量。
+        cp * sy, sy * sp * sr + cy * cr, -sy * sp * cr + cy * sr, location.y,
+        // 第三行元素，这是变换矩阵第三行的前三个元素，对应着在z方向上经过旋转后的坐标变换关系，
+        // 最后一个元素location.z表示在z方向上的平移量。
+        sp, -cp * sr, cp * cr, location.z,
+        // 第四行元素，对于4x4的齐次坐标变换矩阵，最后一行通常是 [0, 0, 0, 1]，用于保持矩阵的齐次坐标形式，便于进行矩阵乘法等运算。
+        0.0, 0.0, 0.0, 1.0};
+
+    // 返回构建好的表示变换矩阵的数组，这个矩阵可以用于对三维空间中的点、向量等进行相应的旋转和平移变换操作，
+    // 比如在图形渲染、3D模型变换等场景中会经常用到这样的变换矩阵来确定物体在空间中的最终位置和朝向等。
+    return transform;
+}
 
             return transform;
         }
