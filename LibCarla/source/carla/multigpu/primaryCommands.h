@@ -42,13 +42,29 @@ class PrimaryCommands {
     // 发送以了解连接是否处于活动状态
     void SendIsAlive();
 
-    token_type GetToken(stream_id sensor_id);
+    // 函数声明，位于某个类中（这里从函数名及参数推测可能是和数据处理、传感器交互相关的类），函数名为GetToken。
+// 它接收一个stream_id类型的参数sensor_id，这个参数大概率是用于标识某个特定的数据流或者传感器相关的唯一标识符。
+// 函数的作用是根据传入的传感器标识符（sensor_id）获取对应的token_type类型的令牌（这里token_type应该是自定义的一种数据类型，表示某种授权、标识等作用的令牌）。
+// 例如在涉及多传感器数据访问权限管理或者数据流认证等场景下，通过该函数获取相应的令牌来进行后续操作。
+token_type GetToken(stream_id sensor_id);
 
-    void EnableForROS(stream_id sensor_id);
+// 函数声明，所在类同样可能与传感器或者数据流相关操作有关。
+// 函数名为EnableForROS，参数sensor_id是stream_id类型，用于指定某个特定的数据流或者传感器。
+// 该函数的功能是针对传入的这个特定传感器（由sensor_id标识），启用其在ROS（Robot Operating System，机器人操作系统）环境下的相关功能或者配置，
+// 比如开启该传感器向ROS系统发送数据、让ROS能够识别并处理该传感器传来的信息等，常用于在将传感器接入ROS系统时进行相关设置操作。
+void EnableForROS(stream_id sensor_id);
 
-    void DisableForROS(stream_id sensor_id);
+// 函数声明，和上述EnableForROS函数相对应，属于同一类中的相关操作函数。
+// 函数名为DisableForROS，参数同样是stream_id类型的sensor_id，用于标识特定的数据流或传感器。
+// 此函数的作用是针对由sensor_id指定的传感器，禁用其在ROS环境下的相关功能或配置，
+// 例如停止该传感器向ROS系统发送数据、使ROS不再处理该传感器相关的信息等，通常用于在不需要传感器数据或者要进行维护等情况下对传感器在ROS中的使用进行关闭操作。
+void DisableForROS(stream_id sensor_id);
 
-    bool IsEnabledForROS(stream_id sensor_id);
+// 函数声明，所在类大概率涉及传感器与ROS系统交互相关的逻辑。
+// 函数名为IsEnabledForROS，接收stream_id类型的sensor_id参数，用于确定某个特定的传感器（由sensor_id标识）在ROS环境下是否已经被启用，
+// 返回一个bool类型的值，若返回true，表示该传感器在ROS环境下对应的功能或配置处于启用状态；若返回false，则表示处于禁用状态。
+// 这个函数常被用于在程序中判断传感器在ROS系统中的启用情况，以便根据不同情况执行相应的后续操作，比如根据启用与否决定是否接收其数据等。
+bool IsEnabledForROS(stream_id sensor_id);
 
   private:
 
